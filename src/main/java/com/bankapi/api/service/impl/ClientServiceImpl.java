@@ -123,6 +123,7 @@ public class ClientServiceImpl implements ClientService {
     private ClientDto mapToDto(Client client) {
         ClientDto clientDto = new ClientDto();
 
+        clientDto.setId(client.getId());
         clientDto.setName(client.getName().toLowerCase());
         clientDto.setStatus(client.getStatus());
         clientDto.setPassword(client.getPassword());
@@ -138,6 +139,8 @@ public class ClientServiceImpl implements ClientService {
 
     private Client mapToEntity(ClientDto clientDto) {
         Client client = new Client();
+
+        client.setId(clientDto.getId());
         client.setName(clientDto.getName().toLowerCase());
         client.setStatus(clientDto.getStatus());
         client.setPassword(clientDto.getPassword());

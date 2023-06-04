@@ -8,5 +8,5 @@ public class AccountDto {
     private int accountNumber;
     private String accountType;
     private int initialBalance;
-    private boolean state;
+    private Boolean state;
 }
