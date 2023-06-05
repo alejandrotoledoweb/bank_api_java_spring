@@ -35,7 +35,6 @@ public class ClientController {
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ClientDto> createClient(@Valid @RequestBody ClientDto clientDto) {
 
-
         return new ResponseEntity<>(clientService.createClient(clientDto), HttpStatus.CREATED);
     }
 

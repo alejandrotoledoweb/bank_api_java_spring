@@ -18,6 +18,7 @@ public class AccountController {
         this.accountService = accountService;
     }
 
+
     @PostMapping("/clients/{clientId}/accounts")
     public ResponseEntity<AccountDto> createAccount(@PathVariable(value="clientId") long clientId,
                                                     @RequestBody AccountDto accountDto) {

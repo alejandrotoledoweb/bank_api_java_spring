@@ -1,5 +1,6 @@
 package com.bankapi.api.exceptions;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,6 +26,17 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AccountIntegrityValidationException.class)
+    public ResponseEntity<ErrorObject> handleAccountIntegrityValidationException(AccountIntegrityValidationException ex) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.CONFLICT.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(new Date());
+
+        return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(ClientNotFoundException.class)
     public ResponseEntity<ErrorObject> handleClientNotFoundException(ClientNotFoundException ex, WebRequest request) {
         ErrorObject errorObject = new ErrorObject();
@@ -38,6 +50,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccountNotFoundException.class)
     public ResponseEntity<ErrorObject> handleAccountNotFoundException(AccountNotFoundException ex, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(new Date());
+
+        return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MovementNotFountException.class)
+    public ResponseEntity<ErrorObject> handleMovementNotFountException(MovementNotFountException ex, WebRequest request) {
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());

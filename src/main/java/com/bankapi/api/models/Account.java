@@ -16,6 +16,7 @@ public class Account {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
+    @Column(unique = true)
     private Long accountNumber;
     private String accountType;
     private Long initialBalance;

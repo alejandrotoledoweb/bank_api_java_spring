@@ -1,7 +1,7 @@
 package com.bankapi.api.service.impl;
 
 import com.bankapi.api.dto.AccountDto;
-import com.bankapi.api.dto.ClientDto;
+import com.bankapi.api.exceptions.AccountIntegrityValidationException;
 import com.bankapi.api.exceptions.AccountNotFoundException;
 import com.bankapi.api.exceptions.ClientNotFoundException;
 import com.bankapi.api.models.Account;
@@ -9,6 +9,7 @@ import com.bankapi.api.models.Client;
 import com.bankapi.api.repository.AccountRepository;
 import com.bankapi.api.repository.ClientRepository;
 import com.bankapi.api.service.AccountService;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,6 +33,12 @@ public class AccountServiceImpl implements AccountService {
 
         Client client = clientRepository.findById(clientId).orElseThrow(() ->new ClientNotFoundException("Client accounts not found"));
         account.setClient(client);
+
+        if (accountRepository.findByAccountNumber(accountDto.getAccountNumber()) != null) {
+            throw new AccountIntegrityValidationException("An Account with this number already exists.");
+        }
+
+        clientRepository.save(client);
 
         Account newAccount = accountRepository.save(account);
 
