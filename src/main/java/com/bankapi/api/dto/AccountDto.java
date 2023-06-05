@@ -5,8 +5,8 @@ import lombok.Data;
 @Data
 public class AccountDto {
     private int id;
-    private int accountNumber;
+    private Long accountNumber;
     private String accountType;
-    private int initialBalance;
+    private Long initialBalance;
     private Boolean state;
 }

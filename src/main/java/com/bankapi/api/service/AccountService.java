@@ -8,11 +8,11 @@ public interface AccountService {
 
     AccountDto createAccount(long clientId, AccountDto accountDto);
 
-    List<AccountDto> getAccountByClientId(long id);
+    List<AccountDto> getAccountsByClientId(long id);
 
-    AccountDto getAccountById(int reviewId, long clientId);
+    AccountDto getAccountById(long clientId, long accountId);
 
-    AccountDto updateAccount(long clientId, int accountId, AccountDto accountDto);
+    AccountDto updateAccount(long clientId, long accountId, AccountDto accountDto);
 
-    void deleteAccount(long clientId, int accountId);
+    void deleteAccount(long clientId, long accountId);
 }

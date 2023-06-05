@@ -18,8 +18,8 @@ public class Movement {
     private int id;
     private Date date;
     private String movementType;
-    private String value;
-    private int balance;
+    private Long value;
+    private Long balance;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="account_id")

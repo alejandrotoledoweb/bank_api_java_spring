@@ -16,9 +16,9 @@ public class Account {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private int id;
-    private int accountNumber;
+    private Long accountNumber;
     private String accountType;
-    private int initialBalance;
+    private Long initialBalance;
     private Boolean state;
 
     @ManyToOne(fetch = FetchType.LAZY)
