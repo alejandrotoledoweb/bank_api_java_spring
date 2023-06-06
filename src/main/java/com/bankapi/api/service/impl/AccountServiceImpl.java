@@ -9,7 +9,6 @@ import com.bankapi.api.models.Client;
 import com.bankapi.api.repository.AccountRepository;
 import com.bankapi.api.repository.ClientRepository;
 import com.bankapi.api.service.AccountService;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

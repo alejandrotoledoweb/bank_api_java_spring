@@ -59,8 +59,8 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(MovementNotFountException.class)
-    public ResponseEntity<ErrorObject> handleMovementNotFountException(MovementNotFountException ex, WebRequest request) {
+    @ExceptionHandler(MovementNotFoundException.class)
+    public ResponseEntity<ErrorObject> handleMovementNotFoundException(MovementNotFoundException ex, WebRequest request) {
         ErrorObject errorObject = new ErrorObject();
 
         errorObject.setStatusCode(HttpStatus.NOT_FOUND.value());
@@ -68,6 +68,16 @@ public class GlobalExceptionHandler {
         errorObject.setTimestamp(new Date());
 
         return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler(MovementBadRequestException.class)
+    public ResponseEntity<ErrorObject> handleMovementBadRequestException(MovementBadRequestException ex, WebRequest request) {
+        ErrorObject errorObject = new ErrorObject();
+
+        errorObject.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        errorObject.setMessage(ex.getMessage());
+        errorObject.setTimestamp(new Date());
+
+        return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.BAD_REQUEST);
     }
 
 }

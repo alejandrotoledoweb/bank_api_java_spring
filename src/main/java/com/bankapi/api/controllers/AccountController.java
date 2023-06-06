@@ -1,11 +1,15 @@
 package com.bankapi.api.controllers;
 
 import com.bankapi.api.dto.AccountDto;
+import com.bankapi.api.dto.MovementDto;
 import com.bankapi.api.service.AccountService;
+import com.bankapi.api.service.MovementService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -13,16 +17,24 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
+    private final MovementService movementService;
 
-    public AccountController(AccountService accountService) {
+    public AccountController(AccountService accountService, MovementService movementService) {
         this.accountService = accountService;
+        this.movementService= movementService;
     }
 
 
     @PostMapping("/clients/{clientId}/accounts")
     public ResponseEntity<AccountDto> createAccount(@PathVariable(value="clientId") long clientId,
-                                                    @RequestBody AccountDto accountDto) {
-        return new ResponseEntity<>(accountService.createAccount(clientId, accountDto), HttpStatus.CREATED);
+                                                    @Valid @RequestBody AccountDto accountDto) {
+        AccountDto newAccount = accountService.createAccount(clientId, accountDto);
+        MovementDto movementDto = new MovementDto();
+        movementDto.setValue(accountDto.getInitialBalance());
+        movementDto.setDate(new Date());
+        movementDto.setMovementType(accountDto.getAccountType());
+        movementService.createFirstMovement(newAccount.getId(), movementDto);
+        return new ResponseEntity<>(newAccount, HttpStatus.CREATED);
     }
 
     @GetMapping("/clients/{clientId}/accounts")

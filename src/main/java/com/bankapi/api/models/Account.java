@@ -1,6 +1,7 @@
 package com.bankapi.api.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,7 @@ public class Account {
     private int id;
     @Column(unique = true)
     private Long accountNumber;
+    @Pattern(regexp = "ahorros|corriente", message = "Account type must be either 'ahorros' or 'corriente'")
     private String accountType;
     private Long initialBalance;
     private Boolean state;

@@ -2,11 +2,11 @@ package com.bankapi.api.exceptions;
 
 import java.io.Serial;
 
-public class MovementNotFountException extends RuntimeException {
+public class MovementBadRequestException extends RuntimeException {
     @Serial
     private static final long serialVersionUID = 4L;
 
-    public MovementNotFountException(String message) {
+    public MovementBadRequestException(String message) {
         super(message);
 
     }
