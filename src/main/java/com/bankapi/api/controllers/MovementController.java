@@ -49,6 +49,14 @@ public class MovementController {
         return new ResponseEntity<>(movementService.updateMovement(accountId, id, movementDto), HttpStatus.ACCEPTED);
     }
 
+    @DeleteMapping("/account/{accountId}/movements/{id}")
+    public ResponseEntity<String> deleteMovement(@PathVariable(value="accountId") long accountId,
+                                                 @PathVariable(value="id") long id) {
+        movementService.deleteMovement(accountId, id);
+        return new ResponseEntity<>("Movement deleted successfully", HttpStatus.ACCEPTED);
+
+    }
+
 
 
 

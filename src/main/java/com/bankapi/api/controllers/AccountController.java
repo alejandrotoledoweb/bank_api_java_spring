@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class AccountController {
         AccountDto newAccount = accountService.createAccount(clientId, accountDto);
         MovementDto movementDto = new MovementDto();
         movementDto.setValue(accountDto.getInitialBalance());
-        movementDto.setDate(new Date());
+        movementDto.setDate(LocalDateTime.now());
         movementDto.setMovementType(accountDto.getAccountType());
         movementService.createFirstMovement(newAccount.getId(), movementDto);
         return new ResponseEntity<>(newAccount, HttpStatus.CREATED);

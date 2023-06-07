@@ -2,9 +2,11 @@ package com.bankapi.api.service.impl;
 
 import com.bankapi.api.dto.MovementDto;
 import com.bankapi.api.exceptions.AccountNotFoundException;
+import com.bankapi.api.exceptions.ClientNotFoundException;
 import com.bankapi.api.exceptions.MovementBadRequestException;
 import com.bankapi.api.exceptions.MovementNotFoundException;
 import com.bankapi.api.models.Account;
+import com.bankapi.api.models.Client;
 import com.bankapi.api.models.Movement;
 import com.bankapi.api.repository.AccountRepository;
 import com.bankapi.api.repository.MovementRepository;
@@ -12,6 +14,10 @@ import com.bankapi.api.service.MovementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +29,8 @@ public class MovementServiceImpl implements MovementService {
 
     private MovementRepository movementRepository;
     private AccountRepository accountRepository;
+
+    private final int maxWithdraw = 1000;
 
     @Autowired
     public MovementServiceImpl(MovementRepository movementRepository, AccountRepository accountRepository) {
@@ -36,7 +44,7 @@ public class MovementServiceImpl implements MovementService {
         Account account = accountRepository.findById(accountId).orElseThrow(()-> new MovementNotFoundException("Account with this id could not be found"));
 
         movement.setBalance(movement.getValue());
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         movement.setDate(now);
         movement.setAccount(account);
         movement.setInitialBalance(0L);
@@ -53,12 +61,10 @@ public class MovementServiceImpl implements MovementService {
 
         Account account = accountRepository.findById(accountId).orElseThrow(()-> new MovementNotFoundException("Account with this id could not be found"));
         movement.setAccount(account);
-        Date now = new Date();
+        LocalDateTime now = LocalDateTime.now();
         movement.setDate(now);
 
         boolean isCorrectType = Objects.equals(account.getAccountType(), movement.getMovementType());
-        System.out.println(isCorrectType);
-
         if (!isCorrectType) {
             throw new MovementBadRequestException("Movement type could not be processed");
         }
@@ -74,8 +80,26 @@ public class MovementServiceImpl implements MovementService {
         long newBalance = lastMovementBalance + movementValue;
         movement.setBalance(newBalance);
 
+
+        LocalDate localDate = LocalDate.now();
+        LocalDateTime startOfDay = localDate.atStartOfDay();
+        LocalDateTime endOfDay = localDate.plusDays(1).atStartOfDay().minusNanos(1);
+
+        System.out.println("move ser: " + startOfDay);
+        List<Movement> lastTodayMovements = movementRepository.findByDateBetween(startOfDay,endOfDay);
+        long totalAmountForToday = calculateTotal(lastTodayMovements);
+
+        if( movement.getValue() < 0) {
+            totalAmountForToday += movement.getValue();
+        }
+
+        long absTotalValue = Math.abs(totalAmountForToday);
+        if (absTotalValue > maxWithdraw && movement.getValue() < 0) {
+            throw new MovementBadRequestException("Cupo diario excedido");
+        }
+
         if (newBalance <= 0) {
-            throw new MovementBadRequestException("Not sufficient founds");
+            throw new MovementBadRequestException("Saldo no disponible");
         }
 
         Movement newMovement = movementRepository.save(movement);
@@ -134,7 +158,15 @@ public class MovementServiceImpl implements MovementService {
     }
 
     @Override
-    public void deleteMovement(long id) {
+    public void deleteMovement(long accountId, long id) {
+        Account account = accountRepository.findById(accountId).orElseThrow((()-> new AccountNotFoundException("Account id does not exist")));
+        Movement movement = movementRepository.findById(id).orElseThrow(()-> new MovementNotFoundException("Movement associated with the account not found"));
+
+        if(movement.getAccount().getId() != account.getId()) {
+            throw new MovementNotFoundException("This movement does not belong to the account");
+        }
+
+        movementRepository.delete(movement);
 
     }
 
@@ -160,7 +192,21 @@ public class MovementServiceImpl implements MovementService {
         movementDto.setValue(movement.getValue());
         movementDto.setBalance(movement.getBalance());
         movementDto.setInitialBalance(movement.getInitialBalance());
+        movementDto.setAccountNumber(movement.getAccount().getAccountNumber());
+        movementDto.setAccountType(movement.getAccount().getAccountType());
+        movementDto.setStatus(movement.getAccount().getState());
 
         return movementDto;
+    }
+
+    private long calculateTotal(List<Movement> movementsList) {
+        long totalAmount= 0L;
+        for (Movement movement : movementsList) {
+            long temp = movement.getValue();
+            if (temp < 0L) {
+                totalAmount += temp;
+            }
+        }
+        return totalAmount;
     }
 }

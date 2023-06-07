@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -17,7 +18,7 @@ public class Movement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private Date date;
+    private LocalDateTime date;
     @Pattern(regexp = "ahorros|corriente", message = "Account type must be either 'ahorros' or 'corriente'")
     private String movementType;
     private Long value;

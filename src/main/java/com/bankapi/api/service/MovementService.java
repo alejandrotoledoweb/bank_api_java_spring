@@ -17,5 +17,6 @@ public interface MovementService {
 
     MovementDto updateMovementPatch(long accountId, long id, MovementDto movementDto);
 
-    void deleteMovement(long id);
+    void deleteMovement(long accountId, long movementId);
+
 }
