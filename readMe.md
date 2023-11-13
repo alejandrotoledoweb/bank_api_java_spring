@@ -7,7 +7,9 @@
 - create a db according to the application.properties information file
 - run the app
 
+## Database Schema
 
+![](src/main/resources/static/bank_api_java_spring_database_schema.png)
 ## Endpoints
 
 ### FOR CLIENTS:
