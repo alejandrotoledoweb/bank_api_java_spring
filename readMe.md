@@ -47,6 +47,9 @@ Body example:
 
 - DELETE: /api/clients/:clientId
 
+
+
+
 ### FOR ACCOUNTS
 
 - POST (Create new account): /api/clients/:clientId/accounts
@@ -74,6 +77,9 @@ Body Example:
 
 - DELETE: /api/clients/:clientId/accounts/:accountId
 
+
+
+
 ### FOR MOVEMENTS
 
 - POST (Create new movement): /api/account/:accountId/movements
@@ -97,6 +103,9 @@ Body:
 - GET ALL: /api/account/:accountId/movements
 - GET SINGLE: /api/account/:accountId/movements/:id
 - DELETE: /api/account/:accountId/movements/:id
+
+
+
 
 ### FOR REPORTS
 
